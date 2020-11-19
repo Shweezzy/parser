@@ -20,33 +20,37 @@ const parserNewsWebView = async click => {
                 let container = await document.querySelectorAll('div.article_news_list');
                 container.forEach(item => {
                     let title = item
-                        .querySelector('div.article_header')
-                        .innerText
-                        .replace(/(\r\n|\n|\r)/gm, " ");
+                        .querySelector('div.article_header a')
+                        .lastChild
+                        .textContent;
                     let addTime = item
                         .querySelector('div.article_time')
-                        .innerText;
+                        .textContent;
                     let link = item
                         .querySelector('.article_header a')
                         .href;
                     let publicationDate = published;
                     let previousDate = dateOfNews[0].href;
                     let dateOfParsing = new Date().toLocaleString();
-
+                    let text = item
+                        .querySelector('div.article_subheader')
+                        .textContent
+                        .replace(/(\r\n|\n|\r)/gm, " ");
                     result.push({
                         title,
                         addTime,
                         link,
                         publicationDate,
                         dateOfParsing,
-                        previousDate
+                        previousDate,
+                        text
                     });
                 });
                 return result;
             });
             //parsing text after following the link
             for (let i = 0; i < html.length - 1; i++) {
-                if (html[i].link.substr(0, 31) == link) {
+                if (html[i].link.substr(8, 10) == 'www.pravda') {
                     await page.goto(html[i].link, {waitUntil: 'domcontentloaded'})
                     await page
                         .waitForSelector('div.post_text')
@@ -58,19 +62,18 @@ const parserNewsWebView = async click => {
                             article = document
                                 .querySelector('div.post_text')
                                 .innerText
-                                .replace(/(\r\n|\n|\r)/gm, " ");
+                                .replace(new RegExp("\\r?\\n", "g"), "");;
                         } catch (e) {
                             article = null;
                         }
 
                         return article;
                     })
-                    html[i]['text'] = article;
-                } else 
+                    html[i].text += article;
+                } else {
                     html.splice(i, 1);
-                }
-            ;
-            await browser.close();
+                };
+            };
             //added object on JSON
             fs.appendFileSync('pravda.json', JSON.stringify(html), function (err) {
                 if (err) 
@@ -88,4 +91,4 @@ const parserNewsWebView = async click => {
 };
 
 //Number of days
-parserNewsWebView(1);
+parserNewsWebView(31);
