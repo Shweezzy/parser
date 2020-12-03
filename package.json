@@ -10,6 +10,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "puppeteer": "^5.4.1"
+        "mongodb": "^3.6.3",
+        "puppeteer": "^5.4.1",
+        "mongoose": "^5.10.15"
     }
 }
