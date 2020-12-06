@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const url = "mongodb+srv://shweezzy:19961101@pravda.0jfpq.mongodb.net/news?retryWrites=true&w" +
+const url = "mongodb+srv://*******:******@pravda.0jfpq.mongodb.net/news?retryWrites=true&w" +
         "=majority";
 const userScheme = new Schema({
     _id: Object,
